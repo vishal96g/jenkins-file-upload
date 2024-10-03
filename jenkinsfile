@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+    environment {
+    name ='Vikas'
+    }
+    parameters {
+        string (name:'person', defaultValue:'Vishal Gupta', description:'')
+        booleanParam (name:'isMale', defaultValue:'True', description:'')
+        choice (name:'city', choices:['Junpur','Mumbai','Hydrabad','Chennai'], description:'')
+    }
+    stages {
+        stage('Linux Command') {
+            steps {
+             sh '''
+             pwd
+             touch abc.txt
+             ls
+             date
+             df -h
+             '''
+            }
+        }
+        stage('Environment Veriable') {
+            steps {
+                sh 'echo " Build id is: ${BUILD_ID}"'
+            }
+        }
+        stage('User Veriable') {
+            environment
+            {
+                username='Vikas Gupta'
+            }
+            steps {
+                sh 'echo "My name is: ${username}"'
+            }
+        }
+        stage('Deploy on Production') {
+            steps {
+                sh 'echo "My name is: ${name}"'
+                sh 'echo "My name is: ${person}"'
+                sh 'echo "My Gender is: ${isMale}"'
+                sh 'echo "My City is: ${city}"'
+                 
+            }
+        }
+        
+        stage('User Inpur') {
+            input {
+             message"Should be proceed?"
+             ok "Yes"
+            }
+            steps {
+             echo 'Move to prod'
+            }
+        }
+    }
+    
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+        }
+        failure { 
+            echo 'failure'
+        }
+        success { 
+            echo 'success'
+        }
+    }
+}
+
